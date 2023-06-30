@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de tareas</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      form {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      input[type="text"] {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
+        border: none;
+        margin-right: 0.5rem;
+      }
+
+      button[type="submit"] {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
+        border: none;
+        background-color: #4caf50;
+        color: white;
+      }
+
+      ul {
+        list-style-type: none;
+        margin-top: 2rem;
+        padding-left: 0;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        background-color: #f5f5f5;
+        margin-bottom: 0.5rem;
+      }
+
+      .material-icons {
+        margin-right: 0.5rem;
+      }
+
+      .pending {
+        color:#ff9800
+      }
+
+      .in-progress {
+      	color:#2196f3
+      }
+
+      .completed {
+      	color:#4caf50
+      }
+
+      .delete {
+      	cursor:pointer
+      }
+      
+	  .status {
+	    padding: 0.5rem 1rem;
+	    font-size: 1rem;
+	    border-radius: 0.25rem;
+	    border:none
+	    background-color:#4caf50
+	    color:white
+	  }
+    </style>
+  </head>
+  <body>
+    <h1>Lista de tareas</h1>
+
+    <form id="task-form">
+      <input type="text" id="task-input" placeholder="Agregar tarea..." />
+      <button type="submit">Agregar</button>
+    </form>
+
+    <ul id="task-list"></ul>
+
+    <script>
+    	const form = document.querySelector('#task-form');
+    	const input = document.querySelector('#task-input');
+    	const list = document.querySelector('#task-list');
+
+    	form.addEventListener('submit', (e) => {
+    		e.preventDefault();
+    		const text = input.value.trim();
+    		if (text !== '') {
+    			const li = document.createElement('li');
+    			li.innerHTML = '<i class="material-icons md-18 pending">access_time</i> ' + text + ' <button class="status">Pendiente</button> <span class="delete">X</span> <span class="time">Creado a las ' + getTime() + '</span>';
+    			list.insertBefore(li, list.firstChild);
+    			input.value = '';
+    			input.focus();
+    		}
+    	});
+
+    	list.addEventListener('click', (e) => {
+    		if (e.target.classList.contains('delete')) {
+    			e.target.parentElement.remove();
+    		} else if (e.target.classList.contains('status')) {
+    			const statusButton = e.target;
+    			const icon = e.target.parentElement.querySelector('.material-icons');
+    			const timeSpan = e.target.parentElement.querySelector('.time');
+    			if (statusButton.textContent === 'Pendiente') {
+    				statusButton.textContent = 'En proceso';
+    				icon.classList.remove('pending');
+    				icon.classList.add('in-progress');
+    				timeSpan.textContent = 'Actualizado a las ' + getTime();
+    			} else if (statusButton.textContent === 'En proceso') {
+    				statusButton.textContent = 'Finalizado';
+    				icon.classList.remove('in-progress');
+    				icon.classList.add('completed');
+    				timeSpan.textContent = 'Actualizado a las ' + getTime();
+    			}
+    		}
+    	});
+
+    	function getTime() {
+    		const now = new Date();
+    		const hours = now.getHours();
+    		const minutes = now.getMinutes();
+    		return `${pad(hours)}:${pad(minutes)}`;
+    	}
+
+    	function pad(num) {
+    		return num.toString().padStart(2, '0');
+    	}
+    </script>
+  </body>
+</html>
+
